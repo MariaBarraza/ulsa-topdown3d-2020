@@ -9,7 +9,12 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Axis * moveSpeed * Time.deltaTime);
+        transform.Translate(Axis.normalized.magnitude * Vector3.forward * moveSpeed * Time.deltaTime);
+
+        if(Axis != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(Axis.normalized);
+        }
     }
 
     Vector3 Axis
