@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
     NavMeshAgent navMeshAgent;
     Animator animator;
 
-[SerializeField]
+    [SerializeField]
     GameObject weapon;
 
     void Start()
