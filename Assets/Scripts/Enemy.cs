@@ -12,9 +12,15 @@ public class Enemy : MonoBehaviour
     float minDistance;
 
     NavMeshAgent navMeshAgent;
-    [SerializeField]
     Animator animator;
 
+[SerializeField]
+    GameObject weapon;
+
+    void Start()
+    {
+        WeaponVisible(false);
+    }
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -25,22 +31,52 @@ public class Enemy : MonoBehaviour
     {
         if(Attack)
         {
+           if(!GameManager.instance.IsInCombat)
+           {
+               GameManager.instance.IsInCombat = true;
+           }
             navMeshAgent.destination = GameManager.instance.Player.transform.position;
             transform.LookAt(GameManager.instance.Player.transform);
         }  else
         {
             navMeshAgent.destination = transform.position;
+           
+           if(StopCombat && GameManager.instance.IsInCombat)
+           {
+               GameManager.instance.IsInCombat = false;
+               animator.SetLayerWeight(0,1);
+               animator.SetLayerWeight(1,0);
+               GameManager.instance.StopCombat();
+               WeaponVisible(false);
+           }
+
+            if(GameManager.instance.IsInCombat)
+            {
+                GameManager.instance.StartCombat();
+                animator.SetLayerWeight(1,1);
+                WeaponVisible(true);
+            }
         } 
     }
 
     void LateUpdate()
     {
         animator.SetBool("run",Attack);
+  
+    }
+
+    bool StopCombat
+    {
+        get => !(distanceBtwPlayer <= minDistance);
     }
     public bool Attack
     {
-        get => distanceBtwPlayer  <= minDistance && 
+        get => !StopCombat && 
         distanceBtwPlayer > navMeshAgent.stoppingDistance;
+    }
+    void WeaponVisible(bool visible)
+    {
+        weapon.SetActive(visible);
     }
 
     float distanceBtwPlayer

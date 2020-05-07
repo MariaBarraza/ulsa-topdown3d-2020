@@ -8,12 +8,18 @@ public class Player : MonoBehaviour
     float moveSpeed;
 
     Animator anim;
+    [SerializeField]
+    GameObject weapon;
 
     void Awake()
     {
         anim = GetComponent<Animator>();
     }
 
+    void Start()
+    {
+        WeaponVisible(false);
+    }
     void Update()
     {
         transform.Translate(Axis.normalized.magnitude * Vector3.forward * moveSpeed * Time.deltaTime);
@@ -25,8 +31,14 @@ public class Player : MonoBehaviour
         anim.SetFloat("move",Mathf.Abs(Axis.normalized.magnitude));
     }
 
+    public void WeaponVisible(bool visible)
+    {
+        weapon.SetActive(visible);
+    }
+
     Vector3 Axis
     {
         get => new Vector3(Input.GetAxis("Horizontal"),0,Input.GetAxis("Vertical"));
     }
+    public Animator Anim { get => anim; }
 }
